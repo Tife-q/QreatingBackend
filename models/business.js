@@ -5,7 +5,7 @@ const business = mongoose.Schema(
         firstName: { type: String },
         lastName: { type: String },
         email: { type: String },
-        phone: { type: String },
+        mobile: { type: String },
         password: { type: String },
         companyName: { type: String },
         active:{type: Boolean},

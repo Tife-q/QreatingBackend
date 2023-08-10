@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('./models/users');
+const User = require('../models/users');
+const Business = require('../models/business');
 const authenticateToken = require('../middleware/authenticateToken');
 
 const config = require('config');
@@ -10,7 +11,7 @@ const JWT_SECRET = config.get('jwtPrivateKey')
 
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, mobile, password, status, role, stripeID } = req.body;
+    const { firstName, lastName, email, phone, password  } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -21,28 +22,63 @@ router.post('/register', async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      name,
+      firstName,
+      lastName,
       email,
-      mobile,
+      phone,
       password: hashedPassword,
-      status,
-      role,
-      stripeID,
+      role:"Individual",
+      active: true,
     });
 
     await newUser.save();
-    res.status(201).json(newUser);
+    res.status(200).json(newUser);
   } catch (err) {
     res.status(400).json({ error: 'Failed to create user.' });
   }
 });
 
+
+router.post('/register-business', async (req, res) => {
+  try {
+    const { firstName, lastName, email, phone, password, companyName } = req.body;
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(409).json({ error: 'Email is already registered.' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = new Business({
+      firstName,
+      lastName,
+      email,
+      phone,
+      password: hashedPassword,
+      companyName,
+      active: true,
+    });
+
+    await newUser.save();
+    res.status(200).json(newUser);
+  } catch (err) {
+    res.status(400).json({ error: 'Failed to create user.' });
+  }
+});
+  
+  
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ error: 'Email or password is incorrect.' });
+      user = await Business.findOne({ email })
+    }
+    
+    if (!user) {
+      return res.status(404).json({ error: 'Email or password is incorrect.' });  
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -50,9 +86,8 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ error: 'Email or password is incorrect.' });
     }
 
-    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
-
-    res.json({ message: 'Login successful.', user, token });
+    const token = jwt.sign({ userId: user._id, role: user.role || 'Business', email: user.email }, JWT_SECRET, { expiresIn: '24h' });
+    res.json({ message: 'Login successful.', user, token,role: user.role || 'Business' });
   } catch (err) {
     res.status(400).json({ error: 'Failed to login.' });
   }

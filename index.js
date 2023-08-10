@@ -13,9 +13,10 @@ const apiAuthMiddleware = require('./middleware/apiAuthKey');
 
 
 const Index = require('./routes/index')
+const Users = require('./routes/users')
 
 
-const port = 3001; 
+const port = 61500; 
 
 connectDB()
 dotenv.config()
@@ -30,7 +31,8 @@ app.use('/api', apiAuthMiddleware);
 app.use(logger('dev'))
 
 
-app.use('/api/v2', Index)
+app.use('/api/v1', Index)
+app.use('/api/v1/users', Users)
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);

@@ -6,7 +6,7 @@ const users  = mongoose.Schema(
 		lastName: { type: String },
         active:{type: Boolean},
 		email: { type: String },
-		mobile: { type: String },
+		phone: { type: String },
 		password: { type: String },
         status: { type: String },
         role: { type: String },

@@ -1,4 +1,4 @@
 {
     "jwtPrivateKey": "NPqa5jwXpzSuVHfsD0HxtiUzGbsHYw",
-    "mongoURI" : "mongodb+srv://<username>:<password>@qreatingdbcluster.aj2ktua.mongodb.net/"
+    "mongoURI" : "mongodb+srv://Muazzam:muazzam@qreatingdbcluster.aj2ktua.mongodb.net/qreating?retryWrites=true&w=majority"
 }       
