@@ -27,7 +27,8 @@ router.post('/register', async (req, res) => {
       email,
       phone,
       password: hashedPassword,
-      role:"Individual",
+      role:"Coach",
+      status:"Pending",
       active: true,
     });
 
@@ -94,7 +95,7 @@ router.post('/login', async (req, res) => {
 });
 
 
-router.get('/users', authenticateToken, async (req, res) => {
+router.get('/all-users', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Access forbidden. Admin access required.' });
@@ -108,7 +109,7 @@ router.get('/users', authenticateToken, async (req, res) => {
 });
 
 
-router.get('/users/:id', authenticateToken, async (req, res) => {
+router.get('/get-one/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin' && req.user.userId !== req.params.id) {
       return res.status(403).json({ error: 'Access forbidden.' });
@@ -125,13 +126,12 @@ router.get('/users/:id', authenticateToken, async (req, res) => {
 });
 
 
-router.put('/users/:id', authenticateToken, async (req, res) => {
+router.put('/update/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin' && req.user.userId !== req.params.id) {
       return res.status(403).json({ error: 'Access forbidden.' });
     }
-
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const user = await User.findByIdAndUpdate(req.params.id, req.body.data);
     if (!user) {
       return res.status(404).json({ error: 'User not found.' });
     }
@@ -141,7 +141,7 @@ router.put('/users/:id', authenticateToken, async (req, res) => {
   }
 });
 
-router.delete('/users/:id', authenticateToken, async (req, res) => {
+router.delete('/delete/:id', authenticateToken, async (req, res) => {
   try {
     if (req.user.role !== 'admin' && req.user.userId !== req.params.id) {
       return res.status(403).json({ error: 'Access forbidden.' });

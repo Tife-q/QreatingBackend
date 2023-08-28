@@ -1,32 +1,45 @@
 const mongoose = require('mongoose')
 
-const users  = mongoose.Schema(
-	{
-		firstName: { type: String },
-		lastName: { type: String },
-        active:{type: Boolean},
-		email: { type: String },
-		phone: { type: String },
-		password: { type: String },
+const users = mongoose.Schema(
+    {
+        firstName: { type: String },
+        lastName: { type: String },
+        active: { type: Boolean },
+        email: { type: String },
+        phone: { type: String },
+        password: { type: String },
         status: { type: String },
         role: { type: String },
-        stripeID: {type: String},
+        stripeID: { type: String },
+        parentAccount: { type: String },
         profile: {
-            name: { type: String },
-            title:{ type: String },
-            profilePic:{ type: String },
-            language:[{ type: String }],
-            about:{ type: String },
-            role:{ type: String },
-            introVideo:{ type: String },
-            skills:[{ type: String }],
-            avgResponseTime:{ type: String },
-            availibility:{ type: String },
-            socialMedia: {
+            fullname: { type: String },
+            userName: { type: String },
+            hourlyRate: { type: String },
+            profilePhoto: { type: String },
+            shortDescription: { type: String },
+            mainSpecilization: { type: String },
+            headline: { type: String },
+            location: { type: String },
+            gender: { type: String },
+            language: [{ type: String }],
+            aboutMe: { type: String },
+            role: { type: String },
+            introVideo: { type: String },
+            focusArea: [{ type: String }],
+            avgResponseTime: { type: String },
+            socials: {
                 name: { type: String },
                 link: { type: String },
             },
-            highlights: [{ type: String }],
+            pinnedHighlights: [{ type: String }],
+            workExperiences: [{
+                jobTitle: { type: String },
+                company: { type: String },
+                startDate: { type: String },
+                endDate: { type: String },
+                description: { type: String }
+            }],
         },
         portfolio: [{
             name: { type: String },
@@ -44,9 +57,9 @@ const users  = mongoose.Schema(
             question: { type: String },
             answer: { type: String },
         }],
-        
+
     },
     { timestamps: true }
-    )
+)
 
 module.exports = mongoose.model('users', users)

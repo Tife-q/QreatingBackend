@@ -8,13 +8,13 @@ const   authenticateToken = (req, res, next) => {
   if (!token) return res.status(400).send("No token is provided");
   try {
     let result = jwt.verify(token, JWT_SECRET);
-    req.id = result;
+    req.id = result.userId;
     req.role = result.role
-    req.userId= result.id
+    req.user = result
     next();
   } catch (err) {
     res.status(400).send("Invalid token");
-  }
+  } 
 };
 
 module.exports = authenticateToken;
